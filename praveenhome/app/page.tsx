@@ -13,7 +13,6 @@ import {
   Wifi, 
   WifiOff,
   Power,
-  PowerOff
 } from 'lucide-react';
 import type { MqttClient } from 'mqtt';
 
@@ -60,6 +59,15 @@ const getDeviceColor = (name: string): string => {
   return 'from-gray-400 to-gray-300';
 };
 
+const getShuffledDeviceStates = () =>
+  shuffleArray(deviceTemplates).map((name, i) => ({
+    id: i + 1,
+    name,
+    isOn: false,
+    emoji: getDeviceEmoji(name),
+    color: getDeviceColor(name),
+  }));
+
 export default function TrioxDashboard() {
   const clientRef = useRef<MqttClient | null>(null);
   const [isConnected, setIsConnected] = useState(false);
@@ -77,27 +85,7 @@ export default function TrioxDashboard() {
   });
 
   // Device states
-  const [deviceStates, setDeviceStates] = useState(
-    () => deviceTemplates.map((name, i) => ({ 
-      id: i + 1, 
-      name, 
-      isOn: false,
-      emoji: getDeviceEmoji(name),
-      color: getDeviceColor(name)
-    }))
-  );
-
-  // Shuffle devices on client mount
-  useEffect(() => {
-    const shuffledNames = shuffleArray(deviceTemplates);
-    setDeviceStates(shuffledNames.map((name, i) => ({ 
-      id: i + 1, 
-      name, 
-      isOn: false,
-      emoji: getDeviceEmoji(name),
-      color: getDeviceColor(name)
-    })));
-  }, []);
+  const [deviceStates, setDeviceStates] = useState(() => getShuffledDeviceStates());
 
   // MQTT Connection
   useEffect(() => {
@@ -220,8 +208,7 @@ export default function TrioxDashboard() {
       }
       clientRef.current = null;
       isSubscribed = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+};
   }, []);
 
   // Toggle device function with MQTT publish

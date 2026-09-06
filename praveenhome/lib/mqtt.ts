@@ -1,9 +1,9 @@
 // lib/mqtt.ts
 import mqtt, { type MqttClient, type IClientOptions } from 'mqtt';
 
-const HIVEMQ_HOST = 'bfb4089403574511a662765cfa5537be.s1.eu.hivemq.cloud';
-const HIVEMQ_USERNAME = 'wavedeccan';
-const HIVEMQ_PASSWORD = '11223344';
+const HIVEMQ_HOST = process.env.NEXT_PUBLIC_HIVEMQ_HOST ?? 'bfb4089403574511a662765cfa5537be.s1.eu.hivemq.cloud';
+const HIVEMQ_USERNAME = process.env.NEXT_PUBLIC_HIVEMQ_USERNAME ?? 'wavedeccan';
+const HIVEMQ_PASSWORD = process.env.NEXT_PUBLIC_HIVEMQ_PASSWORD ?? '11223344';
 
 export function createMqttClient(): MqttClient {
   const options: IClientOptions = {
